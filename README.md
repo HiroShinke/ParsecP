@@ -18,11 +18,11 @@ from parsecp2 import *
 def tr(reg): return token(pR(reg))
 def ts(str): return token(pS(str))
 
-pAddop = tr(r"\+") >> (lambda t: operator.add) | \
-         tr(r"-")  >> (lambda t: operator.sub) 
+pAddop = ts("+") >> (lambda t: operator.add) | \
+         ts("-") >> (lambda t: operator.sub) 
 
-pMulop = tr(r"\*") >> (lambda t: operator.mul) | \
-         tr(r"\/") >> (lambda t: operator.div)
+pMulop = ts("*") >> (lambda t: operator.mul) | \
+         ts("/") >> (lambda t: operator.truediv)
         
 pDigit = tr(r"\d+") > ( lambda t: int(t.word) )
 pFactor = pDigit | \
