@@ -8,10 +8,19 @@ Yet Another Parsec like parser combinator library for Python
 
 ## Description
 
+A parser combinator library for Python
+inspired by Parsec library for Haskell
+(http://hackage.haskell.org/package/parsec)
+
 ## Requirement
 
 ## Usage
 
+Let me show a simple calculator program using ParsecP bellow.
+
+This is a straightforward port of 
+an example of the use of pChainl1 
+in the Text.Parsec hackage page
 
 ```python
 from parsecp2 import *
@@ -50,6 +59,8 @@ https://github.com/HiroShinke/ParsecP/blob/master/json2.py
 ## Licence
 
 ## Author
+
+   Hiofumi SHINKE <hiro.shinke@gmail.com>
 
 
 [shield-python]: https://img.shields.io/badge/python-3.6-blue.svg
