@@ -4,7 +4,7 @@
      A implementation by the wrapper class with some operator overloading
 """
 __all__ = [ "r","para","f","k","l","m","u","o","d","c","opt","sb","sb1",
-            "ws","ws1","pS","pR","token","pRef","runParser", "word", "digit" ]
+            "ws","ws1","pS","pR","token","runParser", "word", "digit" ]
 
 import re
 import types

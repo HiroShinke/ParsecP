@@ -40,10 +40,10 @@ def createParser():
     quoted = k(ts('"')) + m(string_part | string_esc) + k(pS('"')) > \
              (lambda *ts: "".join(ts) )
 
-    array = para(lbrack, sb(pRef(lambda : value), comma), rbrack) > \
+    array = para(lbrack, sb(r(lambda : value), comma), rbrack) > \
              (lambda *vs: [v for v in vs] )
 
-    object_pair = quoted + colon + pRef(lambda : value) > \
+    object_pair = quoted + colon + r(lambda : value) > \
                   (lambda k,c,v: (k,v))
 
     json_obj = para(lbrace, sb(object_pair, comma), rbrace) > \

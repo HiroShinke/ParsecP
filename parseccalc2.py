@@ -28,7 +28,7 @@ def createParser():
         
     pDigit = tr(r"\d+") > ( lambda t: int(t.word) )
     pFactor = pDigit | \
-              para( ts("("), pRef(lambda : pExpr), ts(")") )
+              para( ts("("), r(lambda : pExpr), ts(")") )
 
     pTerm   = pFactor & pMulop
     pExpr   = pTerm   & pAddop
