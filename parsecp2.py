@@ -3,7 +3,7 @@
      yet another Parsec like parser combinator library for Python
      A implementation by the wrapper class with some operator overloading
 """
-__all__ = [ "a","r","para","f","k","l","m","u","o","d","c","opt","sb","sb1",
+__all__ = [ "r","para","f","k","l","m","u","o","d","c","opt","sb","sb1",
             "ws","ws1","pS","pR","token","pRef","runParser", "word", "digit" ]
 
 import re

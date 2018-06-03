@@ -108,7 +108,10 @@ class Json2Test(unittest.TestCase):
                                "efg" : [4.0,5.0,6.0] } )
 
 
-unittest.main()
+if __name__ == "__main__":        
+    unittest.main()
+
+
 
 
 

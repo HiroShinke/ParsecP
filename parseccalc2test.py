@@ -69,8 +69,7 @@ class ParsecCalc2Test(unittest.TestCase):
         success,s,v = runParser(p,"1/(2-3)")
         self.assertTrue( v == -1 )
 
-unittest.main()
-
-
+if __name__ == "__main__":
+    unittest.main()
 
     
