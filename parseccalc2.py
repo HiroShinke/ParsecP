@@ -1,4 +1,12 @@
 
+'''
+    A simple calculator program using ParsecP.
+
+    This is a straightforward port of 
+    an example of the use of pChainl1 
+    in the Text.Parsec hackage page
+
+'''
 
 from parsecp2 import *
 import operator
@@ -12,11 +20,11 @@ def createParser():
 
     pExpr = None
                 
-    pAddop = tr(r"\+") >> (lambda t: operator.add) | \
-             tr(r"-")  >> (lambda t: operator.sub) 
+    pAddop = ts("+") >> (lambda t: operator.add) | \
+             ts("-") >> (lambda t: operator.sub) 
 
-    pMulop = tr(r"\*") >> (lambda t: operator.mul) | \
-             tr(r"\/") >> (lambda t: operator.div)
+    pMulop = ts("*") >> (lambda t: operator.mul) | \
+             ts("/") >> (lambda t: operator.truediv)
         
     pDigit = tr(r"\d+") > ( lambda t: int(t.word) )
     pFactor = pDigit | \
