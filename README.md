@@ -4,6 +4,7 @@ Yet Another Parsec like parser combinator library for Python
 [![python version][shield-python]](#)
 [![parser combinator][shield-parser]](#)
 [![haskell][shield-haskell]](#)
+[![license][shield-license]](#)
 
 ## Description
 
@@ -54,3 +55,4 @@ https://github.com/HiroShinke/ParsecP/blob/master/json2.py
 [shield-python]: https://img.shields.io/badge/python-3.6-blue.svg
 [shield-parser]: https://img.shields.io/badge/tag-parser_combinator-green.svg
 [shield-haskell]: https://img.shields.io/badge/tag-haskell-green.svg
+[shield-license]: https://img.shields.io/badge/license-MIT-blue.svg
