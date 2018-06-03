@@ -326,8 +326,6 @@ def pA(p,func):
             return (FAILED,s)
     return Parser(parse)
 
-print("typeof(pA) = {}".format(type(pA)))
-
 
 def pDebug(label,p):
     def parse(s):
@@ -496,9 +494,6 @@ def word(str):
 def digit():
     return a(token(pR(r"\d+")), lambda s: int(s.word))
 
-
-p = word("a")
-print("p={}".format(type(p)))
 
 if __name__ == "__main__":
     

@@ -47,7 +47,10 @@ def mainLoop():
             print( runParser(pExpr,buff[0:pos]) )
             buff = ""
 
-mainLoop()
+if __name__ == "__main__":
+    mainLoop()
+
+    
 
 
 
