@@ -1,7 +1,7 @@
 # ParsecP
 Yet Another Parsec like parser combinator library for Python
 
-![python version](https://img.shields.io/badge/python-3.6-blue.svg)
+[![python version][shield-python]](#)
 
 ## Description
 
@@ -16,3 +16,4 @@ Yet Another Parsec like parser combinator library for Python
 ## Author
 
 
+[shield-python]: https://img.shields.io/badge/python-3.6-blue.svg
