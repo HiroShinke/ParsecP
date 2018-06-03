@@ -12,12 +12,7 @@ A parser combinator library for Python
 inspired by Parsec library for Haskell
 (http://hackage.haskell.org/package/parsec)
 
-## Requirement
-
-## Usage
-
-Let me show a simple calculator program using ParsecP bellow.
-
+I show a simple calculator program using ParsecP bellow.
 This is a straightforward port of 
 an example of the use of pChainl1 
 in the Text.Parsec hackage page
@@ -44,6 +39,12 @@ pExpr   = pTerm   & pAddop
 runParser(pExpr,"2 + (2 + 3)*10")
 
 ```
+## Requirement
+
+Python3 
+
+## Usage
+
 
 ## Examples
 
