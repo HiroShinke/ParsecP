@@ -12,7 +12,7 @@ Yet Another Parsec like parser combinator library for Python
 ## Usage
 
 
-'''python
+```python
 from parsecp2 import *
 
 def tr(reg): return token(pR(reg))
@@ -33,7 +33,7 @@ pExpr   = pTerm   & pAddop
 
 runParser(pExpr,"2 + (2 + 3)*10")
 
-'''
+```
 
 ## Examples
 
