@@ -2,8 +2,8 @@
 Yet Another Parsec like parser combinator library for Python
 
 [![python version][shield-python]](#)
-[![python version][shield-parser]](#)
-[![python version][shield-haskell]](#)
+[![parser combinator][shield-parser]](#)
+[![haskell][shield-haskell]](#)
 
 ## Description
 
