@@ -45,6 +45,75 @@ Python3
 
 ## Usage
 
+ParsecP provides following combinators.
+
+(to be developed)
+
+* r(func) :: func -> Parser
+
+  func() is a thunk which return a parser at runtime.
+  r returns a parser which apply the parser
+
+  This is used for recursivelly defined grammer.
+
+* para(po,p,pc) :: Parser -> Parser -> Parser -> Parser
+
+  para returns the parser which parse p0, then p, and pc, 
+  and return the result of p.
+  The parser discard results of po and pc.
+
+* f(p,pred) :: Parser -> pred -> Parser
+
+  f return the parser which apply parser p,
+  then check then result of p by pred.
+  if result of pred is true, the parser returns the result of p.
+  if result of pred is false, the parser  returns not success.
+  
+* k(p) :: Parser -> Parser
+
+* l(str,p)
+
+* m
+
+* u
+
+* o
+
+* d
+
+* c
+
+* opt
+
+* sb
+
+* sb1
+
+* ws
+
+* ws1
+
+* pS
+
+* pR
+
+* token
+
+* pRef
+
+* word
+
+* digit
+
+* p >> f :: Parser -> function -> Parser 
+
+* >
+
+* +
+
+* &
+
+*runParser
 
 ## Examples
 
@@ -54,6 +123,8 @@ https://github.com/HiroShinke/ParsecP/blob/master/parseccalc2.py
 JSON
 https://github.com/HiroShinke/ParsecP/blob/master/json2.py
 
+S-Expression
+https://github.com/HiroShinke/ParsecP/blob/master/sexp.py
 
 ## Contribution
 
