@@ -71,11 +71,37 @@ ParsecP provides following combinators.
   
 * k(p) :: Parser -> Parser
 
+  k returns the parser which apply parser p,
+  then discard the result of p.
+
 * l(str,p)
 
-* m
+  k returns the parser which apply parser p,
+  then return the labeled list [str, [*v]].
+  Where v is return of the original parser p.
 
-* u
+  'l' is for label.
+
+* m(p)
+
+  m returns the parser which apply parser p zero or more times,
+  then returns a list of the return values of p
+
+  'm' is for many
+
+* m1(p)
+
+  m1 returns the parser which apply parser p one or more times,
+  then returns a list of the return values of p
+
+* u(p)
+
+  u returns a parser which apply parser p.
+  if p consumes input stream and returns failed,
+  the parser restores input srtream and then returns failed.
+
+  'u' is for undo
+   this is the try combinator
 
 * o
 
