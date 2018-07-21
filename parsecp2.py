@@ -3,7 +3,7 @@
      yet another Parsec like parser combinator library for Python
      A implementation by the wrapper class with some operator overloading
 """
-__all__ = [ "r","para","f","k","l","m","u","o","d","c","opt","sb","sb1",
+__all__ = [ "r","para","f","k","l","m","m1","u","o","d","c","opt","sb","sb1",
             "ws","ws1","pS","pR","token","runParser", "word", "digit" ]
 
 import re
@@ -415,7 +415,7 @@ def pOpt(p):
           return (SUCCESS,s0,*w)
       else:
           if s0 == s:
-              return (SUCCESS,s)
+              return (SUCCESS,s,None)
           else:
               print("failed at {0}".format(s0))
               return (FAILED,s0)
@@ -478,6 +478,7 @@ f    = pF
 k    = pK
 l    = pL
 m    = pM
+m1   = pM1
 u    = pU
 o    = pO
 d    = pD
