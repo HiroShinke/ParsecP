@@ -224,7 +224,7 @@ def pMT (p,endFunc):
                 return (SUCCESS,s0,*ret)
             else:
                 if s0 != s:
-                    return (FAILE,s0)
+                    return (FAILED,s0)
                 success,s1,*w = p(s0)
                 if success:
                     s = s1
