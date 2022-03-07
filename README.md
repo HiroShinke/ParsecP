@@ -1,6 +1,7 @@
 # ParsecP
 Yet Another Parsec like parser combinator library for Python
 
+[![Python package](https://github.com/HiroShinke/ParsecP/actions/workflows/python-package.yml/badge.svg)](https://github.com/HiroShinke/ParsecP/actions/workflows/python-package.yml)
 [![python version][shield-python]](#)
 [![parser combinator][shield-parser]](#)
 [![haskell][shield-haskell]](#)
