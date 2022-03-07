@@ -154,7 +154,7 @@ def pAny():
     return pChar( lambda s: s.curstr[0] )
 
 def pEof():
-    return pNotFollowdBy(pAny)
+    return pNotFollowedBy(pAny)
 
 def token(p):
     return pU( pD( pK( pR(r"\s*") ), p ))
@@ -422,7 +422,7 @@ def pOpt(p):
     return Parser(parse)
 
 # notFollowedBy
-def pNotFolloedBy(p):
+def pNotFollowedBy(p):
     def parse(s):
         success,*_ = p(s)
         if not success:
