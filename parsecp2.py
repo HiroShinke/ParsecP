@@ -60,7 +60,7 @@ class Parser:
         return self.parser(*args,**keys)
 
     def __add__(self,b):
-        return pD(self.parser,b.parser)
+        return pD(self.parser,b)
 
     def __gt__(self,func):
         return pA(self.parser,func)
@@ -128,7 +128,7 @@ def predString(str):
     return pred
 
 def predRegexp(pat):
-    prog = re.compile("^" + pat)
+    prog = re.compile(pat)
     def pred(s):
         m = prog.match(s.curstr())
         if m:
