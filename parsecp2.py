@@ -48,6 +48,13 @@ class Token:
         self.lineno = lineno
         self.column = column
 
+    def __str__(self):
+        return self.word
+
+    def __repr__(self):
+        return self.word
+    
+
 class Parser:
 
     def __init__(self,parser):
@@ -187,8 +194,7 @@ def pD(*ps):
         for p in ps:
             success,s,*w = p(s)
             if success:
-                for v in w:
-                    ret.append(v)
+                ret.extend(w)
             else:
                 return (FAILED,s)
         return (SUCCESS,s,*ret)
@@ -202,7 +208,7 @@ def pM(p):
         while True:
             success,s0,*w = p(s)
             if success:
-                ret.append(*w)
+                ret.extend(w)
                 s = s0
             else:
                 break
@@ -228,7 +234,7 @@ def pMT (p,endFunc):
                 success,s1,*w = p(s0)
                 if success:
                     s = s1
-                    ret.append(*w)
+                    ret.extend(w)
                 else:
                     return (FAILED,s1)
     return Parser(parse)
@@ -270,7 +276,7 @@ def pSepEndBy1(p,sep):
         while True:
             success,s,*w = p(s)
             if success:
-                ret.append(*w)
+                ret.extend(w)
                 ok = True
                 success,s = sep(s)
                 if success:
@@ -296,14 +302,14 @@ def pChain(p,op,evalFunc):
         ops    = []
         success,s,*w = p(s)
         if success:
-            values.append(*w)
+            values.extend(w)
             while True:
                 success,s,*w = op(s)
                 if success:
                     success,s,*w1 = p(s)
                     if success:
                         ops.append(w[0])
-                        values.append(*w1)
+                        values.extend(w1)
                     else:
                         return (FAILED,s)
                 else:
