@@ -4,10 +4,12 @@
      A implementation by the wrapper class with some operator overloading
 """
 __all__ = [ "r","para","f","k","l","m","m1","u","o","d","c","opt","sb","sb1",
-            "ws","ws1","pS","pR","token","runParser", "word", "digit" ]
+            "ws","ws1","pS","pR","token","runParser", "word", "digit",
+            "action" ]
 
 import re
 import types
+from functools import wraps
 
 SUCCESS = True
 FAILED  = False
@@ -80,7 +82,18 @@ class Parser:
 
     def __and__(self,p):
         return pCl1(self.parser,p)
-        
+
+    def __invert__(self):
+        return pK(self.parser)
+
+    def __truediv__(self,p):
+        return pSepBy(self.parser,p)
+
+    def __floordiv__(self,p):
+        return pSepBy1(self.parser,p)
+
+    
+    
         
 # def parser(func):
 #     print("decorator parser: {}".format(func))
@@ -476,6 +489,13 @@ def pU(p):
         else:
             return (FAILED,s)
     return Parser(parse)
+
+
+def action(act):
+    def action_wrapper(p):
+        pw = wraps(p)(pA(p,act))
+        return pw
+    return action_wrapper
 
 a    = pA
 r    = pRef
