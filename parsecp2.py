@@ -4,7 +4,7 @@
      A implementation by the wrapper class with some operator overloading
 """
 __all__ = [ "r","para","f","k","l","m","m1","u","o","d","c","opt","sb","sb1",
-            "ws","ws1","pS","pR","token","runParser", "word", "digit",
+            "ws","ws1","pS","pR","pOk","pFail","token","runParser", "word", "digit",
             "action" ]
 
 import re
@@ -99,8 +99,10 @@ class Parser:
     def __floordiv__(self,p):
         return pSepBy1(self.parser,p)
 
-    
-    
+    def __iadd__(self,p):
+        self.parser = p.parser
+        return self
+
         
 # def parser(func):
 #     print("decorator parser: {}".format(func))
@@ -187,9 +189,7 @@ def token(p):
     return pU( pD( pK( pR(r"\s*") ), p ))
 
 def pRef(lazy):
-    p = None
     def parse(s):
-#        if p == None:
         p = lazy()
         return p(s)
     return Parser(parse)
@@ -406,7 +406,10 @@ def pCr1(p,op):
             v2 = vs.pop()
             v1 = vs.pop()
             o = os.pop()
-            v = o(v1,v2)
+            if callable(o):
+                v = o(v1,v2)
+            else:
+                v = [o,v1,v2]
             vs.append(v)
         return vs[0]
 
@@ -423,7 +426,10 @@ def pCl1(p,op):
             v1 = vs.pop()
             v2 = vs.pop()
             o = os.pop()
-            v = o(v1,v2)
+            if callable(o):
+                v = o(v1,v2)
+            else:
+                v = [o,v1,v2]
             vs.append(v)
         return vs[0]
 

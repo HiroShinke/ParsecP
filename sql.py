@@ -27,18 +27,53 @@ class Table:
     name  : str
     alias : str
 
+def createExprParser():
+    
+    pExpr = pFail("null parser")
+
+    kDistinct = ts("distinct")
+
+    kAddop = ts("+") | ts("-") 
+    kMulop = ts("*") | ts("/")
+    kIdentifier = tr(r"[a-zA-Z]+")
+    kDigit = tr(r"\d+") 
+
+    pFunctionArg = ~kDistinct + ( pExpr // ts(",") )
+    
+    pFactor = kDigit | kIdentifier | \
+              para( ts("("), pExpr, ts(")") ) | \
+              kIdentifier + -ts("(") + pFunctionArg + -ts(")") 
+
+    pTerm   =  pFactor & kMulop
+    pExpr   += pTerm   & kAddop
+
+    return pExpr
+
 def createParser():
 
     kSelect = ts("select")
     kFrom = ts("from")
+    kAll  = ts("all")
+    kIs = ts("is")
+    kAs = ts("as")
 
-    pColumnName = tr(r"[a-zA-Z]+")
-    pColumn = pColumnName + opt( -ts("as") + pColumnName )
-    
-    pTableName = tr(r"[a-zA-Z]+")
-    pTable  = pTableName + opt( -ts("as") + pTableName )
+    kBinop = tr(r"\+|-|/|\*")
+    kUnary = tr(r"\+|-")
+
+    kIdentifier = tr(r"[a-zA-Z]+")
+    pTableName = kIdentifier
+    pColumnName = kIdentifier    
+
+    pExpr = createExprParser()
+
+    pColumnResult =  \
+        pExpr + ~( -kAs + pColumnName ) | \
+        ts("*") | \
+        pTableName + ts(".") + ts("*")
+
+    pTable  = pTableName + ~( -kAs + pTableName )
                 
-    pColumnList = pColumn // ts(",")
+    pColumnList = pColumnResult // ts(",")
     pTableList  = pTable  // ts(",")
     
     pSelectStatement = (-kSelect) + pColumnList + (-kFrom)   + pTableList
@@ -47,7 +82,7 @@ def createParser():
 
 
 def mainLoop():
-    autoGenerateLabel(createParser)
+    autoGenerateLabel(createParser) 
     pExpr = createParser()
     buff = ""
     while True:
