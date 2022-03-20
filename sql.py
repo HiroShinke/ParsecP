@@ -33,15 +33,15 @@ def createParser():
     kFrom = ts("from")
 
     pColumnName = tr(r"[a-zA-Z]+")
-    pColumn = pColumnName + opt( ~ts("as") + pColumnName )
+    pColumn = pColumnName + opt( -ts("as") + pColumnName )
     
     pTableName = tr(r"[a-zA-Z]+")
-    pTable  = pTableName + opt( ~ts("as") + pTableName )
+    pTable  = pTableName + opt( -ts("as") + pTableName )
                 
     pColumnList = pColumn // ts(",")
     pTableList  = pTable  // ts(",")
     
-    pSelectStatement = ~kSelect + pColumnList + ~kFrom   + pTableList
+    pSelectStatement = (-kSelect) + pColumnList + (-kFrom)   + pTableList
                          
     return pSelectStatement
 

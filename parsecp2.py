@@ -85,7 +85,13 @@ class Parser:
         return pCl1(self.parser,p)
 
     def __invert__(self):
+        return pOpt(self.parser)
+
+    def __neg__(self):
         return pK(self.parser)
+
+    def __pos__(self):
+        return pM1(self.parser)
 
     def __truediv__(self,p):
         return pSepBy(self.parser,p)
