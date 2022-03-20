@@ -10,6 +10,7 @@ __all__ = [ "r","para","f","k","l","m","m1","u","o","d","c","opt","sb","sb1",
 import re
 import types
 from functools import wraps
+from bytecode import Instr, Bytecode
 
 SUCCESS = True
 FAILED  = False
@@ -520,5 +521,43 @@ def word(str):
     
 def digit():
     return a(token(pR(r"\d+")), lambda s: int(s.word))
+
+############# bytecode utils ###############
+
+def wrap_stores_bytecode(func):
+
+    bytecodes = Bytecode.from_code(func.__code__)
+
+    def wrappStore(x):
+        label = x[1:]
+        code = [Instr("LOAD_GLOBAL", 'l'),
+                Instr("LOAD_CONST", label),
+                Instr("LOAD_FAST", x),
+                Instr("CALL_FUNCTION", 2),
+                Instr("STORE_FAST", x)]
+        return code
+
+    new_code = []
+    
+    for inst in bytecodes:
+        new_code.append(inst.copy())
+        if  inst.name == "STORE_FAST" and inst.arg.startswith("p"):
+            codes = wrappStore(inst.arg)
+            new_code.extend(codes)
+
+    return Bytecode(new_code)
+    
+def autoGenerateLabel(func):
+
+    bytecode = wrap_stores_bytecode(func)
+
+    fn_code = func.__code__
+    bytecode.argnames = fn_code.co_varnames
+    argcount = fn_code.co_argcount
+
+    code = bytecode.to_code();
+    func.__code__ = code.replace(co_argcount = argcount)
+    return func
+
 
 
