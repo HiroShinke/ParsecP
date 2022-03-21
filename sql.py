@@ -5,7 +5,7 @@
 '''
 
 from parsecp2 import *
-from parsecp2 import autoGenerateLabel,autoGenerateRecursion
+from parsecp2 import autoGenerateAst,autoGenerateRecursion
 
 import operator
 import sys
@@ -27,7 +27,7 @@ class Table:
     name  : str
     alias : str
 
-@autoGenerateLabel
+@autoGenerateAst
 @autoGenerateRecursion
 def createExprParser():
     
@@ -42,7 +42,7 @@ def createExprParser():
     
     sFactor = kDigit | \
               para( ts("("), pExpr, ts(")") ) | \
-              u(l( "FunctionCall", kIdentifier + -ts("(") + pFunctionArgs + -ts(")") )) | \
+              u(pAst( "FunctionCall", kIdentifier + -ts("(") + pFunctionArgs + -ts(")") )) | \
               kIdentifier
               
     sTerm   = sFactor & kMulop
@@ -50,7 +50,7 @@ def createExprParser():
 
     return pExpr
 
-@autoGenerateLabel
+@autoGenerateAst
 def createParser():
 
     kSelect = ts("select")
@@ -84,19 +84,19 @@ def createParser():
 
 
 def mainLoop():
-    # autoGenerateLabel(createParser) 
     pExpr = createParser()
     buff = ""
     while True:
-        str = sys.stdin.readline()
-        buff = buff + str
+        strx = sys.stdin.readline()
+        buff = buff + strx
         m = re.search(r";",buff)
         if m:
             pos = m.start(0)
             print( "buff={}".format(buff[0:pos]) )
             x,s0,*w=runParser(pExpr,buff[0:pos])
             print(f"x={x}")
-            print(f"w={[t for t in w]}")
+            for t in w:
+                print(str(t))
             buff = ""
 
 if __name__ == "__main__":

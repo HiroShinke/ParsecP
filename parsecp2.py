@@ -4,7 +4,7 @@
      A implementation by the wrapper class with some operator overloading
 """
 __all__ = [ "r","para","f","k","l","m","m1","u","o","d","c","opt","sb","sb1",
-            "ws","ws1","pS","pR","pOk","pFail","token","runParser", "word", "digit",
+            "ws","ws1","pS","pR","pOk","pFail","pAst","token","runParser", "word", "digit",
             "action" ]
 
 import re
@@ -52,11 +52,29 @@ class Token:
         self.column = column
 
     def __str__(self):
-        return self.word
+        return f"(token {self.word} pos={self.pos})"
 
     def __repr__(self):
-        return self.word
-    
+        return f"({self.word} pos={self.pos}, lineno={self.lineno})"
+
+
+class Ast:
+
+    def __init__(self,label,*args):
+        self.label = label
+        self.children = args
+
+    def __str__(self):
+        return self.prettyStringSelf()
+
+    def prettyStringSelf(self,level=0):
+        return "".join( \
+            [ " " * level + "(" + self.label + "\n" ] + \
+            [ c.prettyStringSelf(level+1) \
+              if isinstance(c,Ast)  else " " * (level+1) + str(c) + "\n" \
+              for c in self.children ] + \
+            [ " " * level + ")\n" ]
+                       )
 
 class Parser:
 
@@ -387,6 +405,16 @@ def pL (str,p):
             return (FAILED,s0)
     return Parser(parse)
 
+# generate ast
+def pAst (str,p):
+    def parse(s):
+        success,s0,*w = p(s)
+        if success:
+            return (SUCCESS,s0,Ast(str,*w))
+        else:
+            return (FAILED,s0)
+    return Parser(parse)
+
 # K is for skip
 def pK (p):
     def parse(s):
@@ -542,7 +570,7 @@ def wrap_stores_bytecode(func):
 
     def wrappStore(x):
         label = x[1:]
-        code = [Instr("LOAD_GLOBAL", 'l'),
+        code = [Instr("LOAD_GLOBAL", 'pAst'),
                 Instr("LOAD_CONST", label),
                 Instr("LOAD_FAST", x),
                 Instr("CALL_FUNCTION", 2),
@@ -559,7 +587,7 @@ def wrap_stores_bytecode(func):
 
     return Bytecode(new_code)
     
-def autoGenerateLabel(func):
+def autoGenerateAst(func):
 
     bytecode = wrap_stores_bytecode(func)
 
