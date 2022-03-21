@@ -5,7 +5,7 @@
 '''
 
 from parsecp2 import *
-from parsecp2 import autoGenerateLabel
+from parsecp2 import autoGenerateLabel,autoGenerateRecursion
 
 import operator
 import sys
@@ -27,10 +27,10 @@ class Table:
     name  : str
     alias : str
 
+@autoGenerateLabel
+@autoGenerateRecursion
 def createExprParser():
     
-    pExpr = pFail("null parser")
-
     kDistinct = ts("distinct")
 
     kAddop = ts("+") | ts("-") 
@@ -38,17 +38,19 @@ def createExprParser():
     kIdentifier = tr(r"[a-zA-Z]+")
     kDigit = tr(r"\d+") 
 
-    pFunctionArg = ~kDistinct + ( pExpr // ts(",") )
+    pFunctionArgs = ~kDistinct + ( pExpr // ts(",") )
     
-    pFactor = kDigit | kIdentifier | \
+    pFactor = kDigit | \
               para( ts("("), pExpr, ts(")") ) | \
-              kIdentifier + -ts("(") + pFunctionArg + -ts(")") 
-
+              u(l( "FunctionCall", kIdentifier + -ts("(") + pFunctionArgs + -ts(")") )) | \
+              kIdentifier
+              
     pTerm   =  pFactor & kMulop
-    pExpr   += pTerm   & kAddop
+    pExpr   = pTerm   & kAddop
 
     return pExpr
 
+@autoGenerateLabel
 def createParser():
 
     kSelect = ts("select")
@@ -64,10 +66,10 @@ def createParser():
     pTableName = kIdentifier
     pColumnName = kIdentifier    
 
-    pExpr = createExprParser()
+    sExpr = createExprParser()
 
     pColumnResult =  \
-        pExpr + ~( -kAs + pColumnName ) | \
+        sExpr + ~( -kAs + pColumnName ) | \
         ts("*") | \
         pTableName + ts(".") + ts("*")
 
@@ -82,7 +84,7 @@ def createParser():
 
 
 def mainLoop():
-    autoGenerateLabel(createParser) 
+    # autoGenerateLabel(createParser) 
     pExpr = createParser()
     buff = ""
     while True:

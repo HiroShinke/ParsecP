@@ -70,37 +70,37 @@ class Parser:
         return self.parser(*args,**keys)
 
     def __add__(self,b):
-        return pD(self.parser,b)
+        return pD(self,b)
 
     def __gt__(self,func):
-        return pA(self.parser,func)
+        return pA(self,func)
 
     def __rshift__(self,func):
-        return pA(self.parser,func)
+        return pA(self,func)
 
     def __or__(self,p):
-        return pO(self.parser,p)
+        return pO(self,p)
 
     def __and__(self,p):
-        return pCl1(self.parser,p)
+        return pCl1(self,p)
 
     def __invert__(self):
-        return pOpt(self.parser)
+        return pOpt(self)
 
     def __neg__(self):
-        return pK(self.parser)
+        return pK(self)
 
     def __pos__(self):
-        return pM1(self.parser)
+        return pM1(self)
 
     def __truediv__(self,p):
-        return pSepBy(self.parser,p)
+        return pSepBy(self,p)
 
     def __floordiv__(self,p):
-        return pSepBy1(self.parser,p)
+        return pSepBy1(self,p)
 
     def __iadd__(self,p):
-        self.parser = p.parser
+        self.parser = p
         return self
 
         
@@ -382,7 +382,7 @@ def pL (str,p):
     def parse(s):
         success,s0,*w = p(s)
         if success:
-            return (SUCCESS,s0,[str,[*w]])
+            return (SUCCESS,s0,[str,*w])
         else:
             return (FAILED,s0)
     return Parser(parse)
@@ -572,4 +572,65 @@ def autoGenerateLabel(func):
     return func
 
 
+def support_recursion_bytecode(func):
 
+    bytecodes = Bytecode.from_code(func.__code__)
+
+    localvars = set()
+    undefined = set()
+    
+    for inst in bytecodes:
+        if  inst.name == "STORE_FAST" and inst.arg.startswith("p"):
+            localvars.add(inst.arg)
+        elif  inst.name == "LOAD_FAST" and inst.arg.startswith("p"):
+            if inst.arg in localvars:
+                undefined .add(inst.arg)
+
+    ## define dummies
+    def define_dummy_parser(v):
+        code = [Instr("LOAD_GLOBAL", 'pFail'),
+                Instr("LOAD_CONST", "null parser"),
+                Instr("CALL_FUNCTION", 1),
+                Instr("STORE_FAST", v)]
+        return code
+
+    result = []
+    
+    for v in undefined:
+        codes = define_dummy_parser(v)
+        result.extend(codes)
+
+    ## change assign to iadd
+    def modify_store_bytecode(v):
+        code = [Instr("LOAD_FAST", v),
+                Instr("ROT_TWO"),
+                Instr("INPLACE_ADD"),
+                Instr("STORE_FAST", v)]
+        return code
+        
+    for inst in bytecodes:
+        if  inst.name == "STORE_FAST" and \
+            inst.arg.startswith("p") and \
+            inst.arg in undefined:
+            codes = modify_store_bytecode(inst.arg)
+            result.extend(codes)
+        else:
+            result.append(inst)            
+
+    return Bytecode(result)
+
+
+def autoGenerateRecursion(func):
+
+    bytecode = support_recursion_bytecode(func)
+
+    fn_code = func.__code__
+    bytecode.argnames = fn_code.co_varnames
+    argcount = fn_code.co_argcount
+
+    code = bytecode.to_code();
+    func.__code__ = code.replace(co_argcount = argcount)
+    return func
+
+
+    
