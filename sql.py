@@ -40,13 +40,13 @@ def createExprParser():
 
     pFunctionArgs = ~kDistinct + ( pExpr // ts(",") )
     
-    pFactor = kDigit | \
+    sFactor = kDigit | \
               para( ts("("), pExpr, ts(")") ) | \
               u(l( "FunctionCall", kIdentifier + -ts("(") + pFunctionArgs + -ts(")") )) | \
               kIdentifier
               
-    pTerm   =  pFactor & kMulop
-    pExpr   = pTerm   & kAddop
+    sTerm   = sFactor & kMulop
+    pExpr   = sTerm   & kAddop
 
     return pExpr
 
