@@ -5,7 +5,7 @@
 """
 __all__ = [ "r","para","f","k","l","m","m1","u","o","d","c","opt","sb","sb1",
             "ws","ws1","pS","pR","pOk","pFail","pAst","token","runParser", "word", "digit",
-            "action" ]
+            "pDebug","action","Ast"]
 
 import re
 import types
@@ -174,7 +174,7 @@ def predString(str):
             return None
     return pred
 
-def predRegexp(pat):
+def predRegexp(pat,flags=0):
     prog = re.compile(pat)
     def pred(s):
         m = prog.match(s.curstr())
@@ -188,14 +188,14 @@ def predRegexp(pat):
 def pS(str):
     return pChar( predString(str) )
 
-def pR(str):
-    return pChar( predRegexp(str) )
+def pR(str,flags=0):
+    return pChar( predRegexp(str,flags) )
 
 def pNS(str):
     return pNotChar( predString(str) )
   
-def pNR(regexp):
-    return pNotChar( predRegexp(regexp) )
+def pNR(regexp,flags=0):
+    return pNotChar( predRegexp(regexp,flags) )
   
 def pAny():
     return pChar( lambda s: s.curstr[0] )
@@ -340,12 +340,15 @@ def pChain(p,op,evalFunc):
         ops    = []
         success,s,*w = p(s)
         if success:
+            assert( len(w) == 1 )
             values.extend(w)
             while True:
                 success,s,*w = op(s)
                 if success:
+                    assert( len(w) == 1 )
                     success,s,*w1 = p(s)
                     if success:
+                        assert( len(w1) == 1 )
                         ops.append(w[0])
                         values.extend(w1)
                     else:
@@ -376,6 +379,7 @@ def pDebug(label,p):
       success,s0,*w = p(s)
       if success:
         print("label=" + label + " SUCCESS")
+        print(f"w = {w}")
         return (SUCCESS,s0,*w)
       else:
         print("label=" + label + " FAILED")
@@ -572,7 +576,8 @@ def wrap_stores_bytecode(func):
         label = x[1:]
         code = [Instr("LOAD_GLOBAL", 'pAst'),
                 Instr("LOAD_CONST", label),
-                Instr("LOAD_FAST", x),
+                Instr("ROT_THREE"),
+                Instr("ROT_THREE"),
                 Instr("CALL_FUNCTION", 2),
                 Instr("STORE_FAST", x)]
         return code
@@ -580,10 +585,11 @@ def wrap_stores_bytecode(func):
     new_code = []
     
     for inst in bytecodes:
-        new_code.append(inst.copy())
         if  inst.name == "STORE_FAST" and inst.arg.startswith("p"):
             codes = wrappStore(inst.arg)
             new_code.extend(codes)
+        else:
+            new_code.append(inst)
 
     return Bytecode(new_code)
     
